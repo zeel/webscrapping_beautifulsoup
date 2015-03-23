@@ -36,23 +36,9 @@ def get_property_web_scrapping():
                 if description_text:
                 	properties_dict[anchor_tag["href"]] = description_text
     return properties_dict
-def get_random_header_value():
-    """
-    this function get random user agent reading from file user_agents.txt
-    Args:
-
-    None
-
-    Returns:
-
-    None
-    """
-    with open("user_agents.txt", "r") as fp:
-        return random.choice(fp.read().split("\n"))
 def get_response_text(url):
     """
     this function will send response to the url 
-    it will set a random user agent to every request
     every request will have random sleep time between 5 10 15 seconds
     Args:
 
@@ -63,9 +49,8 @@ def get_response_text(url):
     html text of response if successful else None
     """
     response_text = None
-    #get_sleep_for_random_time()
-    header_value = get_random_header_value()
-    headers = {'User-Agent': header_value}
+    get_sleep_for_random_time()
+    headers = {'User-Agent': "Mozilla/5.0 ;Windows NT 6.3; WOW64; AppleWebKit/537.36 ;KHTML, like Gecko; Chrome/39.0.2171.95 Safari/537.36 "}
     response = requests.get(url, headers = headers)
     if response.ok:
         response_text = response.text
@@ -196,11 +181,13 @@ search_href_successful_list = []
 msg = ""
 for href in href_list:
     description = properties_dict[href]
+    print description
     if search_keyword(description):
         search_href_successful_list = search_href_successful_list + ["http://www.realestate.com.au" + href]
 dump_list_to_file(href_list)
 msg = "Following are the list of property which are new and whose description have keywords:\n" + "\n".join(search_href_successful_list)
 server = smtplib.SMTP('localhost')
 server.set_debuglevel(1)
-server.sendmail(from, to, msg)
+#server.sendmail(from, to, msg)
+server.sendmail("zeel.shah@aspiringminds.in", "kshah215@gmail.com", msg)
 server.quit()
